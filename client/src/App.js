@@ -1,7 +1,10 @@
-import logo from "./logo.svg";
-import "./App.css";
 import * as React from "react";
-import { useEffect } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import Home from "./Home";
+import Calender from "./Calender";
+import About from "./About";
+import Navbar from "./Navbar";
+
 function App() {
   const [message, setMessage] = React.useState("no message");
   React.useEffect(() => {
@@ -11,20 +14,24 @@ function App() {
       .catch((e) => console.log("got error"));
   }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>{message}</p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Navbar />
+        <div className="content">
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            <Route exact path="/about">
+              <About />
+            </Route>
+            <Route exact path="/calender">
+              <Calender />
+            </Route>
+          </Switch>
+        </div>
+      </div>
+    </Router>
   );
 }
 
