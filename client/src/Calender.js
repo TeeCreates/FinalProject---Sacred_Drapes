@@ -100,20 +100,25 @@ const Calender = () => {
       <button onClick={() => handleDecrease()}>decrease</button>
       <button onClick={() => handleIncrease()}>increase</button>
       <span>{displayedMonth}</span>
-      <Weekdays>
-        <div>Sunday</div>
-        <div>Monday</div>
-        <div>Tuesday</div>
-        <div>Wednesday</div>
-        <div>Thursday</div>
-        <div>Friday</div>
-        <div>Saturday</div>
-      </Weekdays>
-      <ScheduleContainer>
-        {totalDisplayedCalender.map((day) => {
-          return <Day>{day}</Day>;
-        })}
-      </ScheduleContainer>
+      <Wrapper>
+        <CalenderContainder>
+          <Weekdays>
+            <div>Sunday</div>
+            <div>Monday</div>
+            <div>Tuesday</div>
+            <div>Wednesday</div>
+            <div>Thursday</div>
+            <div>Friday</div>
+            <div>Saturday</div>
+          </Weekdays>
+          <CalenderDays>
+            {totalDisplayedCalender.map((day) => {
+              return <Day>{day}</Day>;
+            })}
+          </CalenderDays>
+        </CalenderContainder>
+        <p>Please select the date you wish to submit</p>
+      </Wrapper>
     </>
   );
 };
@@ -131,9 +136,19 @@ const Weekdays = styled.div`
   width: 700px;
 `;
 
-const ScheduleContainer = styled.div`
+const CalenderDays = styled.div`
   width: 770px;
   height: 500px;
   display: flex;
   flex-wrap: wrap;
+`;
+
+const CalenderContainder = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
 `;

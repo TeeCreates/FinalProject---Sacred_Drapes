@@ -8,3 +8,9 @@ yarn add styled-components react-router-dom@5.3.0
 Whenever I click the home, about or calender in the nav bar, my url changes but not the actual page. I need to refresh to get the components.
 
 solution: I removed the 5.3 veriosn of react-router-dom and added the version 5th version
+
+# 2
+
+My batchimport wasn't working
+
+solution: had to move the env file from the batchimport folder to outside the batchimport folder
