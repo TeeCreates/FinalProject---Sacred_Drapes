@@ -16,8 +16,6 @@ const Calender = () => {
     setPadding(padding - 1);
   };
 
-  let nav = 0; //keep track of current month
-  let clicked = null;
   let events = localStorage.getItem("events")
     ? JSON.parse(localStorage.getItem("events"))
     : [];
@@ -50,7 +48,6 @@ const Calender = () => {
   // 0 (last day of previous month)
   // -1 (second to last day of the previous month)
   console.log("days in month", new Date(year, month + currentMonth, 0));
-  console.log("month", month);
 
   const firstDayOfMonth = new Date(year, month + padding, 1);
   // 1 will give the first day
@@ -58,12 +55,13 @@ const Calender = () => {
   const dateString = firstDayOfMonth.toLocaleDateString("en-us", {
     weekday: "long",
     year: "numeric",
-    month: "numeric",
+    month: "long",
     day: "numeric",
   });
   // console.log("date string", dateString);
 
   const paddingDays = weekdays.indexOf(dateString.split(", ")[0]);
+  const displayedMonth = dateString.split(" ")[1];
 
   console.log("padding days", paddingDays);
 
@@ -85,16 +83,23 @@ const Calender = () => {
         calenderDays.push(i - paddingDays);
       }
     }
-    totalDisplayedCalender.push(paddingArrDays);
-    totalDisplayedCalender.push(calenderDays);
+    paddingArrDays.forEach((day) => {
+      totalDisplayedCalender.push(day);
+    });
+
+    calenderDays.forEach((day) => {
+      totalDisplayedCalender.push(day);
+    });
   };
   daySquare();
   console.log(totalDisplayedCalender);
+
+  console.log("what?", new Date(year, month));
   return (
     <>
       <button onClick={() => handleDecrease()}>decrease</button>
       <button onClick={() => handleIncrease()}>increase</button>
-
+      <span>{displayedMonth}</span>
       <Weekdays>
         <div>Sunday</div>
         <div>Monday</div>
@@ -104,20 +109,31 @@ const Calender = () => {
         <div>Friday</div>
         <div>Saturday</div>
       </Weekdays>
-      {totalDisplayedCalender.map((day) => {
-        return <span>{day}</span>;
-      })}
+      <ScheduleContainer>
+        {totalDisplayedCalender.map((day) => {
+          return <Day>{day}</Day>;
+        })}
+      </ScheduleContainer>
     </>
   );
 };
 export default Calender;
 const Day = styled.div`
-  margin: 5px;
+  height: 100px;
+  width: 100px;
+  border: 1px solid black;
 `;
 
 const Weekdays = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  width: 700px;
+`;
+
+const ScheduleContainer = styled.div`
   width: 770px;
+  height: 500px;
+  display: flex;
+  flex-wrap: wrap;
 `;
