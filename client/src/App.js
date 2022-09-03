@@ -4,15 +4,10 @@ import Home from "./Home";
 import Calender from "./Calender";
 import About from "./About";
 import Navbar from "./Navbar";
+import { Login } from "./Login";
+import Profile from "./Profile";
 
 function App() {
-  const [message, setMessage] = React.useState("no message");
-  React.useEffect(() => {
-    fetch("/message")
-      .then((res) => res.json())
-      .then((data) => setMessage(data.message))
-      .catch((e) => console.log("got error"));
-  }, []);
   return (
     <Router>
       <div className="App">
@@ -22,11 +17,17 @@ function App() {
             <Route exact path="/">
               <Home />
             </Route>
+            <Route exact path="/login">
+              <Login />
+            </Route>
             <Route exact path="/about">
               <About />
             </Route>
             <Route exact path="/calender">
               <Calender />
+            </Route>
+            <Route exact path="/profile">
+              <Profile />
             </Route>
           </Switch>
         </div>

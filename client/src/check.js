@@ -11,7 +11,6 @@ const Calender = () => {
   const [padding, setPadding] = useState(0);
   const [numberLastMonth, setNumberLastMonth] = useState("");
   const [prevMonth, setPrevMonth] = useState(1);
-  // const [displayedMonthNumber, setDisplayedMonthNumber] = useState("");
 
   const { setSeletectedDate, seletectedDate } = useContext(UserContext);
   const handleIncrease = () => {
@@ -87,19 +86,19 @@ const Calender = () => {
   const dateString = firstDayOfMonth.toLocaleDateString("en-us", {
     weekday: "long",
     year: "numeric",
-    month: "long",
+    month: "numeric",
     day: "numeric",
   });
   // console.log("date string", dateString);
   const currentMonthNumber = new Date(new Date()).getMonth();
   const currentMonthWord = monthsInCalender[currentMonthNumber];
 
+  console.log("check month in array ", displayedMonthWord);
+
   const paddingDays = weekdays.indexOf(dateString.split(", ")[0]);
   const displayedMonthWord = dateString.split(" ")[1];
   const displayedYear = dateString.split(" ")[3];
   // const prevMonth =
-
-  const displayedMonthNumber = monthsInCalender.indexOf(displayedMonthWord);
 
   // console.log("padding days", paddingDays);
 
@@ -138,7 +137,7 @@ const Calender = () => {
       } else if (i > paddingDays) {
         const currentObj = {
           day: i - paddingDays,
-          monthNumber: displayedMonthNumber,
+          monthNumber: currentMonthNumber,
           monthWord: displayedMonthWord,
           year: displayedYear,
         };
@@ -196,7 +195,7 @@ const Calender = () => {
           handleDecrease();
         }}
       />
-      <span>{displayedMonthWord}</span>
+      <span>{displayedMonth}</span>
       <BsFillArrowRightCircleFill onClick={() => handleIncrease()} />
       <Wrapper>
         <CalenderContainder>
