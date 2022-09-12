@@ -47,14 +47,16 @@ app.use("/", express.static(__dirname + "/"));
 
 const {
   getAllImages,
+  statusByDate,
   getSpecificImage,
   deleteSpecificImage,
   addImage,
   addBooking,
   updateBooking,
   deleteSpecificBooking,
-  getSpecificBooking,
+  getUsersBooking,
   getAllBookings,
+  confirmBooking,
 } = require("./handlers");
 
 // endpoints
@@ -66,10 +68,15 @@ app.post("/api/add-image", addImage);
 
 // //BOOKINGS
 app.get("/api/bookings", getAllBookings);
-app.get("/api/bookings/:bookingId", getSpecificBooking);
+app.get("/api/bookings/:email", getUsersBooking);
 app.delete("/api/bookings/:bookingId", deleteSpecificBooking);
 app.post("/api/add-booking", addBooking);
 app.put("/api/update/:bookingId", updateBooking);
+app.get("/api/booking-status-by-date", statusByDate);
+
+//CONFIRM BOOKING
+
+app.post("/api/confirmBooking/:bookingId", confirmBooking);
 
 app.get("*", (req, res) => {
   res.status(404).json({

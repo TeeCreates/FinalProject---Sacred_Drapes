@@ -2,6 +2,7 @@
 
 const { v4: uuidv4 } = require("uuid");
 const { MongoClient } = require("mongodb");
+const moment = require("moment");
 
 require("dotenv").config();
 const { MONGO_URI } = process.env;
@@ -110,7 +111,7 @@ const getAllBookings = async (req, res) => {
   }
 };
 
-const getSpecificBooking = async (req, res) => {
+const statusByDate = async (req, res) => {
   try {
     //connect to mongo
     const client = new MongoClient(MONGO_URI, options);
@@ -118,13 +119,47 @@ const getSpecificBooking = async (req, res) => {
     await client.connect();
     const db = await client.db("FinalProject");
 
-    const { bookingId } = req.params;
+    const getBookings = await db.collection("Bookings").find().toArray();
+    console.log(getBookings);
 
-    const getBoooking = await db
-      .collection("Bookings")
-      .findOne({ _id: bookingId });
+    const result = {};
 
-    res.status(200).json({ status: 200, data: getBoooking });
+    getBookings.forEach((day) => {
+      const key = day.date;
+
+      if (result[key]) {
+        result[key] = result[key] + 1;
+      } else {
+        result[key] = 1;
+        // first time
+      }
+    });
+
+    res.status(200).json({ status: 200, data: result });
+  } catch {
+    res
+      .status(400)
+      .json({ status: 400, message: "could not retrieve bookings" });
+  }
+};
+
+const getUsersBooking = async (req, res) => {
+  try {
+    //connect to mongo
+    const client = new MongoClient(MONGO_URI, options);
+    console.log(MONGO_URI);
+    await client.connect();
+    const db = await client.db("FinalProject");
+
+    const { email } = req.params;
+
+    const getBoooking = await db.collection("Bookings").find().toArray();
+
+    const bookingsWithEmail = getBoooking.filter((booking) => {
+      return booking.email === email;
+    });
+
+    res.status(200).json({ status: 200, data: bookingsWithEmail });
   } catch {
     res
       .status(400)
@@ -174,6 +209,8 @@ const addBooking = async (req, res) => {
       day: req.body.day,
       email: req.body.email,
       services: services,
+      date: req.body.date,
+      confirm: req.body.confirm,
     };
 
     // console.log("new boooking", newBooking);
@@ -216,12 +253,62 @@ const updateBooking = async (req, res) => {
     // console.log("found booking", findBooking);
 
     res.status(200).json({ status: 200, data: findBooking });
-  } catch {
+  } catch (err) {
     res.status(500).json({ status: 500, message: err.message });
   }
 };
 
+// make confirmned booking
+
+const confirmBooking = async (req, res) => {
+  //FOR ADMIN
+  try {
+    //connect to database
+    const client = new MongoClient(MONGO_URI, options);
+    await client.connect();
+    const db = client.db("FinalProject");
+    const { bookingId } = req.params;
+
+    //find the booking request object
+    const findBooking = await db
+      .collection("Bookings")
+      .findOne({ _id: bookingId });
+    console.log("findbooking", findBooking);
+    //make a confirm booking object
+
+    // if the booking request object is found, when confirmed it will be added to the confirmed booking colleciton
+    if (findBooking) {
+      const confirmedBooking = {
+        _id: uuidv4(),
+        firstName: findBooking.firstName,
+        lastName: findBooking.lastName,
+        phoneNumber: findBooking.phoneNumber,
+        email: findBooking.email,
+        services: findBooking.services,
+        serviceDate: findBooking.serviceDate,
+        confirmedDate: moment().format("MMMM Do YYYY, h:mm:ss a"),
+      };
+      await db.collection("Confirmed Bookings").insertOne(confirmedBooking);
+    }
+
+    // we also need to update the booking request from false to true
+
+    if (findBooking) {
+      const updateBooking = await db.collection("Bookings").findOneAndUpdate(
+        { _id: bookingId },
+
+        { $set: { confirm: true } }
+      );
+      console.log("update booking", updateBooking);
+      res.status(200).json({ status: 200, data: updateBooking });
+    }
+  } catch (err) {
+    res.status(400).json({ status: 400, message: err.message });
+  }
+};
+
 module.exports = {
+  confirmBooking,
   getAllImages,
   getSpecificImage,
   deleteSpecificImage,
@@ -229,6 +316,7 @@ module.exports = {
   addBooking,
   updateBooking,
   deleteSpecificBooking,
-  getSpecificBooking,
+  getUsersBooking,
   getAllBookings,
+  statusByDate,
 };

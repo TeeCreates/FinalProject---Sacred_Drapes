@@ -5,15 +5,20 @@ import { BsFillArrowRightCircleFill } from "react-icons/bs";
 import { Form } from "./Form";
 import { useContext } from "react";
 import { UserContext } from "./UserContext";
+import { useEffect } from "react";
+import { User } from "@auth0/auth0-react";
 
 const Calender = () => {
   const [currentMonth, setCurrentMonth] = useState(1);
   const [padding, setPadding] = useState(0);
   const [numberLastMonth, setNumberLastMonth] = useState("");
   const [prevMonth, setPrevMonth] = useState(1);
+  const [edit, setEdit] = useState(false);
+  const [bookingStatus, setBookingStatus] = useState(null);
   // const [displayedMonthNumber, setDisplayedMonthNumber] = useState("");
 
-  const { setSeletectedDate, seletectedDate } = useContext(UserContext);
+  const { setSeletectedDate, seletectedDate, accountEmail } =
+    useContext(UserContext);
   const handleIncrease = () => {
     setCurrentMonth(currentMonth + 1);
     setPadding(padding + 1);
@@ -28,7 +33,7 @@ const Calender = () => {
     setNumberLastMonth(previousMonthNumber - 1);
   };
 
-  console.log("test", numberLastMonth);
+  // console.log("test", numberLastMonth);
 
   // THIS ARRAY WILL HELP DETERMINE HOW MANY PADDING DAYS WE WILL NEED
   const weekdays = [
@@ -122,14 +127,10 @@ const Calender = () => {
           monthWord: prevMonth,
           monthNumber: previousMonthNumber,
           year: displayedYear,
+          max: 3,
         };
         paddingArrDays.push(paddingObj);
-        console.log(
-          "previous month number ",
-          previousMonthNumber,
-          "use state:" + numberLastMonth,
-          currentMonthNumber
-        );
+
         paddingArrDays.sort(function (a, b) {
           return a.day - b.day;
         });
@@ -141,6 +142,7 @@ const Calender = () => {
           monthNumber: displayedMonthNumber,
           monthWord: displayedMonthWord,
           year: displayedYear,
+          max: 3,
         };
 
         calenderDays.push(currentObj);
@@ -175,20 +177,77 @@ const Calender = () => {
   // console.log("After subtracting a month: ", lastMonthData.split(", "));
   let splitLastMonthData = lastMonthData.split(",");
   let lastMonthNumber = splitLastMonthData[1];
-  console.log("actual previous month", lastMonthNumber);
+  // console.log("actual previous month", lastMonthNumber);
 
   const isDateBeforeToday = (date) => {
-    console.log("date", date);
+    // console.log("date", date);
     let day = date.day;
     let monthNumber = date.monthNumber;
-    console.log("number", monthNumber);
+    // console.log("number", monthNumber);
     let year = date.year;
-    console.log(
+
+    return (
       new Date(new Date(year, monthNumber, day).toDateString()) <
-        new Date(new Date().toDateString())
+      new Date(new Date().toDateString())
     );
   };
 
+  console.log(edit);
+
+  // const checkAvailability = () => {
+  //   useEffect(()=>{
+
+  //     fetch("")
+  //   })
+  // };
+
+  const toggleEdit = () => {
+    if (edit === false) {
+      setEdit(true);
+    } else {
+      setEdit(false);
+    }
+  };
+
+  //get all bookings
+  useEffect(() => {
+    const fetchUserBookings = async () => {
+      await fetch("/api/booking-status-by-date", {
+        method: "GET",
+        header: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((data) => {
+          setBookingStatus(data.data);
+        });
+    };
+    fetchUserBookings();
+  }, []);
+  console.log("booking status", bookingStatus);
+  //fecth all bookings
+  // sort by date
+  //max value 3
+  // .length < max === can book
+
+  const getIsBooked = (bookedStatus, date) => {
+    console.log("booking status", bookedStatus);
+    console.log(
+      "test date phrase",
+      date.monthWord + " " + date.day + " " + date.year
+    );
+    console.log(
+      "result",
+      typeof bookedStatus?.[date.monthWord + " " + date.day + " " + date.year]
+    );
+    return (
+      bookedStatus?.[date.monthWord + " " + date.day + " " + date.year] > 3
+    );
+  };
   return (
     <>
       <BsFillArrowLeftCircleFill
@@ -214,9 +273,15 @@ const Calender = () => {
               return (
                 <Day
                   key={index}
+                  isValid={!isDateBeforeToday(date)}
+                  isEdit={edit}
+                  isFullyBooked={getIsBooked(bookingStatus, date)}
                   onClick={() => {
-                    selectDate(date);
-                    isDateBeforeToday(date);
+                    if (!isDateBeforeToday(date)) {
+                      selectDate(date);
+                      date.max = date.max - 1;
+                      console.log("max", date["max"]);
+                    }
                   }}
                 >
                   {date.day}
@@ -224,6 +289,11 @@ const Calender = () => {
               );
             })}
           </CalenderDays>
+          {accountEmail === "thajanah_mk@hotmail.com" ? (
+            <Edit onClick={() => toggleEdit()} isEdit={edit}>
+              edit
+            </Edit>
+          ) : null}
         </CalenderContainder>
         <Form />
       </Wrapper>
@@ -232,10 +302,27 @@ const Calender = () => {
 };
 export default Calender;
 const Day = styled.div`
+  ${(props) =>
+    (!props.isValid || props.isFullyBooked) &&
+    `
+    background: grey;
+    color: red;
+  `}
+  ${(props) =>
+    props.isEdit &&
+    `
+    :hover{
+background-color: yellow;
+    } 
+   
+  `}
+
   height: 100px;
   width: 100px;
   border: 1px solid black;
 `;
+
+// const
 
 const Weekdays = styled.div`
   display: flex;
@@ -259,4 +346,13 @@ const CalenderContainder = styled.div`
 const Wrapper = styled.div`
   display: flex;
   flex-direction: row;
+`;
+
+const Edit = styled.button`
+  ${(props) =>
+    props.isEdit &&
+    `
+    background: black;
+    color: white;
+  `}
 `;

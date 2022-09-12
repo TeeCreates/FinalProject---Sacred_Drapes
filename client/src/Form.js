@@ -2,16 +2,59 @@ import { useAuth0 } from "@auth0/auth0-react";
 import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
 import styled from "styled-components";
+import { useEffect } from "react";
 
 export const Form = () => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const { selectedDate } = useContext(UserContext);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState();
-  const [additionalDetails, setAdditionalDetails] = useState();
+  const [additionalDetails, setAdditionalDetails] = useState("");
+  const [service, setService] = useState(null);
 
-  const submitHandler = () => {};
+  const submitHandler = () => {
+    console.log(selectedDate);
+
+    // const bookingObj = {
+    //   firstName: firstName,
+    //   lastName: lastName,
+    //   month: selectedDate.split(" ")[0],
+    //   day: selectedDate.split(" ")[1],
+    //   month: selectedDate.split(" ")[1],
+    //   services: service,
+    // };
+    // console.log(bookingObj);
+
+    fetch("/api/add-booking", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        firstName: firstName,
+        lastName: lastName,
+        month: selectedDate.split(" ")[0],
+        day: selectedDate.split(" ")[1],
+        year: selectedDate.split(" ")[2],
+        email: user.email,
+        month: selectedDate.split(" ")[1],
+        services: service,
+        date: selectedDate,
+        confirm: false,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((response) => {
+        console.log(response);
+      });
+  };
+
+  useEffect(() => {
+    console.log(service);
+  }, [service]);
   return (
     <>
       {!isAuthenticated ? (
@@ -27,7 +70,7 @@ export const Form = () => {
             </label>
             <label>
               {" "}
-              Firstname
+              Firstname:
               <input
                 type="text"
                 placeholder="Name"
@@ -37,7 +80,7 @@ export const Form = () => {
             </label>
             <label>
               {" "}
-              Lastname
+              Lastname:
               <input
                 type="text"
                 placeholder="lastname"
@@ -45,16 +88,16 @@ export const Form = () => {
                 value={lastName}
               />
             </label>
-            <label>
-              {" "}
-              email
-              <input
-                type="text"
-                placeholder="email"
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-              />
-            </label>
+
+            <div>
+              <select onChange={(e) => setService(e.target.value)}>
+                <option value="0">Select Service</option>
+                <option value="Draping">Draping</option>
+                <option value="Tassles">Tassles</option>
+                <option value="Drapping + Tassles">Drapping + Tassles</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
             <label>
               {" "}
               <input
@@ -64,7 +107,14 @@ export const Form = () => {
                 value={additionalDetails}
               />
             </label>
-            <button>Confirm Booking</button>
+            <button
+              onClick={() => {
+                submitHandler();
+                console.log(service);
+              }}
+            >
+              Confirm Booking
+            </button>
           </FormContainer>
         </Wrapper>
       )}

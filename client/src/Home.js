@@ -3,16 +3,23 @@ import { useState, useEffect } from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import styled from "styled-components";
 import { Upload } from "./Upload";
+import { useContext } from "react";
+import { UserContext } from "./UserContext";
 
 const Home = () => {
-  const { isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
   const [error, setError] = useState("");
   const [message, setMessage] = useState("No messages");
   const [images, setImages] = useState("");
+  const { accountEmail, setAccountEmail } = useContext(UserContext);
   // let history = useHistory();
   // const checkLogin = () => {
   //   history.push("/login");
   // };
+
+  useEffect(() => {
+    setAccountEmail(user?.email);
+  }, [accountEmail]);
 
   useEffect(() => {
     const getProtectedMsg = async () => {
@@ -41,12 +48,12 @@ const Home = () => {
     const fetchImages = async () => {
       const res = await fetch("/api/images");
       const { data } = await res.json();
-      console.log(data);
+      // console.log(data);
       setImages(data);
     };
     fetchImages();
   }, []);
-  console.log(images);
+  // console.log(images);
   return (
     <div>
       {images
