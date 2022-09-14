@@ -6,6 +6,7 @@ import About from "./About";
 import Navbar from "./Navbar";
 import { Login } from "./Login";
 import Profile from "./Profile";
+import BottomFooter from "./BottomFooter";
 
 function App() {
   return (
@@ -17,12 +18,16 @@ function App() {
             <Route exact path="/">
               <Home />
             </Route>
+
+            <Route exact path="/home/:page">
+              <Home />
+            </Route>
             <Route exact path="/login">
               <Login />
             </Route>
-            <Route exact path="/about">
+            {/* <Route exact path="/about">
               <About />
-            </Route>
+            </Route> */}
             <Route exact path="/calender">
               <Calender />
             </Route>
@@ -31,6 +36,7 @@ function App() {
             </Route>
           </Switch>
         </div>
+        <BottomFooter />
       </div>
     </Router>
   );

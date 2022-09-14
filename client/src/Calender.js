@@ -250,13 +250,15 @@ const Calender = () => {
   };
   return (
     <>
-      <BsFillArrowLeftCircleFill
-        onClick={() => {
-          handleDecrease();
-        }}
-      />
-      <span>{displayedMonthWord}</span>
-      <BsFillArrowRightCircleFill onClick={() => handleIncrease()} />
+      <MonthSelecter>
+        <BsFillArrowLeftCircleFill
+          onClick={() => {
+            handleDecrease();
+          }}
+        />
+        <MonthDisplayed>{displayedMonthWord}</MonthDisplayed>
+        <BsFillArrowRightCircleFill onClick={() => handleIncrease()} />
+      </MonthSelecter>
       <Wrapper>
         <CalenderContainder>
           <Weekdays>
@@ -355,4 +357,16 @@ const Edit = styled.button`
     background: black;
     color: white;
   `}
+`;
+
+const MonthSelecter = styled.div`
+  padding: 20px;
+  background-color: aquamarine;
+  width: 200px;
+  display: flex;
+  justify-content: space-evenly;
+`;
+
+const MonthDisplayed = styled.span`
+  font-size: 20px;
 `;

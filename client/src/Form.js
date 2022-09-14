@@ -10,51 +10,52 @@ export const Form = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [additionalDetails, setAdditionalDetails] = useState("");
-  const [service, setService] = useState(null);
+  const [service, setService] = useState("");
+  const [message, setMessage] = useState("");
 
-  const submitHandler = () => {
+  const submitHandler = (event) => {
     console.log(selectedDate);
-
-    // const bookingObj = {
-    //   firstName: firstName,
-    //   lastName: lastName,
-    //   month: selectedDate.split(" ")[0],
-    //   day: selectedDate.split(" ")[1],
-    //   month: selectedDate.split(" ")[1],
-    //   services: service,
-    // };
-    // console.log(bookingObj);
-
-    fetch("/api/add-booking", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        firstName: firstName,
-        lastName: lastName,
-        month: selectedDate.split(" ")[0],
-        day: selectedDate.split(" ")[1],
-        year: selectedDate.split(" ")[2],
-        email: user.email,
-        month: selectedDate.split(" ")[1],
-        services: service,
-        date: selectedDate,
-        confirm: false,
-      }),
-    })
-      .then((res) => {
-        return res.json();
+    event.preventDefault();
+    if (!firstName || !lastName || !service) {
+      setMessage("Please fill the required fields");
+    } else if (!selectedDate) {
+      setMessage("Select the booking date");
+    } else {
+      fetch("/api/add-booking", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName: firstName,
+          lastName: lastName,
+          month: selectedDate.split(" ")[0],
+          day: selectedDate.split(" ")[1],
+          year: selectedDate.split(" ")[2],
+          email: user.email,
+          month: selectedDate.split(" ")[1],
+          services: service,
+          date: selectedDate,
+          confirm: false,
+        }),
       })
-      .then((response) => {
-        console.log(response);
-      });
+        .then((res) => {
+          return res.json();
+        })
+        .then((response) => {
+          console.log(response);
+        });
+    }
   };
 
   useEffect(() => {
     console.log(service);
   }, [service]);
+
+  /// form validation
+  console.log("field test", firstName, lastName, service);
+
   return (
     <>
       {!isAuthenticated ? (
@@ -62,12 +63,15 @@ export const Form = () => {
       ) : (
         <Wrapper>
           <FormContainer>
-            <p>Click on the date you wish to book the service</p>
-            <label>
-              {" "}
-              Date Selected:
-              {selectedDate}
-            </label>
+            {selectedDate ? (
+              <p>
+                {" "}
+                Date Selected:
+                {selectedDate}
+              </p>
+            ) : (
+              <p>Click on the date you wish to book the service</p>
+            )}
             <label>
               {" "}
               Firstname:
@@ -100,21 +104,15 @@ export const Form = () => {
             </div>
             <label>
               {" "}
-              <input
+              <AdditionalDetailsBox
                 type="text"
                 placeholder="additional details"
                 onChange={(e) => setAdditionalDetails(e.target.value)}
                 value={additionalDetails}
               />
             </label>
-            <button
-              onClick={() => {
-                submitHandler();
-                console.log(service);
-              }}
-            >
-              Confirm Booking
-            </button>
+            <button onClick={submitHandler}>Confirm Booking</button>
+            {message ? <Message>{message}</Message> : null}
           </FormContainer>
         </Wrapper>
       )}
@@ -141,4 +139,13 @@ const Wrapper = styled.div`
   width: 300px;
   height: 350px;
   position: relative;
+`;
+
+const Message = styled.span`
+  color: red;
+`;
+
+const AdditionalDetailsBox = styled.input`
+  height: 30px;
+  width: 100%;
 `;

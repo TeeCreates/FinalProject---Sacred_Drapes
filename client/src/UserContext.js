@@ -7,6 +7,7 @@ export const UserProvider = ({ children }) => {
   const [domainBookings, setDomainBookings] = useState("");
   const [userBookings, setUserBookings] = useState("");
   const [accountEmail, setAccountEmail] = useState("");
+  const [section, setSection] = useState(false);
 
   /// fetch all booking to display unavailable dates
 
@@ -21,6 +22,8 @@ export const UserProvider = ({ children }) => {
         setUserBookings,
         accountEmail,
         setAccountEmail,
+        section,
+        setSection,
       }}
     >
       {children}

@@ -4,8 +4,12 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { Login } from "./Login";
+import { useRef } from "react";
+import { useContext } from "react";
+import { UserContext } from "./UserContext";
 
 const Navbar = () => {
+  const { section, setSection } = useContext(UserContext);
   const { isAuthenticated, getAccessTokenSilently } = useAuth0();
   const { logout } = useAuth0();
   const { loginWithRedirect } = useAuth0();
@@ -23,20 +27,27 @@ const Navbar = () => {
   //   textDecoration: "none",
   //   color: "black"
   // };
+
+  const aboutRef = useRef(null);
   return (
     <Wrapper>
       <NavBarContainter>
         <NavLink
           style={{ marginRight: "5px", textDecoration: "none", color: "white" }}
           strict
-          to="/"
+          to="/home/top"
+          onClick={() => setSection(!section)}
         >
           Home
         </NavLink>
         <NavLink
           style={{ marginRight: "5px", textDecoration: "none", color: "white" }}
           exact
-          to="/about"
+          to="/home/about"
+          // onClick={() => {
+          //   aboutRef.current?.scrollIntoView({ behavior: "smooth" });
+          // }}
+          onClick={() => setSection(!section)}
         >
           About
         </NavLink>
@@ -73,7 +84,7 @@ const Navbar = () => {
           </LoginLogout>
         ) : null}
       </NavBarContainter>
-      <H1> Sared Drapes</H1>
+      <H1> Sacred Drapes</H1>
     </Wrapper>
   );
 };
@@ -93,6 +104,9 @@ const Wrapper = styled.nav`
   align-self: center;
   padding-right: 80px;
   padding-top: 10px;
+  position: sticky;
+  top: 0;
+  z-index: 1;
 `;
 
 const LoginLogout = styled.span`
