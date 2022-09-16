@@ -95,7 +95,7 @@ const Home = () => {
           </ImageContainer>
 
           <OverLay>
-            <SacredDrapesTitle>Scared Drapes</SacredDrapesTitle>
+            <SacredDrapesTitle>Sacred Drapes</SacredDrapesTitle>
           </OverLay>
         </div>
       ) : (
