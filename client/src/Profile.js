@@ -4,10 +4,12 @@ import { Bookings } from "./Booking";
 import { useContext } from "react";
 import { UserContext } from "./UserContext";
 import { useEffect } from "react";
+import { Loading } from "./Loading";
+import styled from "styled-components";
 
 const Profile = () => {
   const { user, isAuthenticated, isLoading } = useAuth0();
-  const { accountEmail } = useContext(UserContext);
+  const { accountEmail, userBookings } = useContext(UserContext);
   // useEffect(() => {
   //   fetch(`/api/bookings/${user.email}`, {
   //     method: "GET",
@@ -32,8 +34,9 @@ const Profile = () => {
     isAuthenticated && (
       <div>
         <img src={user.picture} alt={user.name} />
-        <h2>{user.name}</h2>
-        <p>{user.email}</p>
+        <div>
+          <Hey>Hey</Hey> <span>{user.email},</span>
+        </div>
         {user.email ? <Bookings /> : "Loading"}
       </div>
     )
@@ -41,3 +44,9 @@ const Profile = () => {
 };
 
 export default Profile;
+
+const Hey = styled.span`
+  font-family: "Qwitcher Grypen", cursive;
+  font-size: 50px;
+  margin-left: 30px;
+`;

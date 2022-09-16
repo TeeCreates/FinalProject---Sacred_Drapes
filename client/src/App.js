@@ -7,6 +7,7 @@ import Navbar from "./Navbar";
 import { Login } from "./Login";
 import Profile from "./Profile";
 import BottomFooter from "./BottomFooter";
+import ConfirmationPage from "./ConfirmationPage";
 
 function App() {
   return (
@@ -34,6 +35,12 @@ function App() {
             <Route exact path="/profile">
               <Profile />
             </Route>
+            <Route exact path="/confirmed">
+              <ConfirmationPage />
+            </Route>
+            {/* <Route>
+              <ConfirmationPage />
+            </Route> */}
           </Switch>
         </div>
         <BottomFooter />

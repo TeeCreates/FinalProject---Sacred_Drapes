@@ -3,6 +3,8 @@ import { useContext, useState } from "react";
 import { UserContext } from "./UserContext";
 import styled from "styled-components";
 import { useEffect } from "react";
+import { useHistory } from "react-router-dom";
+import { Services } from "./Services";
 
 export const Form = () => {
   const { user, isAuthenticated, getAccessTokenSilently } = useAuth0();
@@ -12,11 +14,14 @@ export const Form = () => {
   const [additionalDetails, setAdditionalDetails] = useState("");
   const [service, setService] = useState("");
   const [message, setMessage] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+
+  let history = useHistory();
 
   const submitHandler = (event) => {
     console.log(selectedDate);
     event.preventDefault();
-    if (!firstName || !lastName || !service) {
+    if (!firstName || !lastName || !service || !phoneNumber) {
       setMessage("Please fill the required fields");
     } else if (!selectedDate) {
       setMessage("Select the booking date");
@@ -38,15 +43,20 @@ export const Form = () => {
           services: service,
           date: selectedDate,
           confirm: false,
+          phone: phoneNumber,
         }),
       })
         .then((res) => {
           return res.json();
         })
         .then((response) => {
+          history.push("/confirmed");
           console.log(response);
         });
     }
+    // if (firstName && lastName && service && selectedDate) {
+    //   history.push("/confirmed");
+    // }
   };
 
   useEffect(() => {
@@ -59,10 +69,24 @@ export const Form = () => {
   return (
     <>
       {!isAuthenticated ? (
-        <span>Please login to book the service</span>
+        <>
+          <div>
+            <Title>Sacred Drapes</Title>
+            <span>Please login to book the service</span>
+          </div>
+        </>
       ) : (
         <Wrapper>
           <FormContainer>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                fontSize: "20px",
+              }}
+            >
+              <Title>Sacred Drapes</Title>
+            </div>
             {selectedDate ? (
               <p>
                 {" "}
@@ -75,7 +99,7 @@ export const Form = () => {
             <label>
               {" "}
               Firstname:
-              <input
+              <InputBox
                 type="text"
                 placeholder="Name"
                 onChange={(e) => setFirstName(e.target.value)}
@@ -85,11 +109,21 @@ export const Form = () => {
             <label>
               {" "}
               Lastname:
-              <input
+              <InputBox
                 type="text"
                 placeholder="lastname"
                 onChange={(e) => setLastName(e.target.value)}
                 value={lastName}
+              />
+            </label>
+            <label>
+              {" "}
+              Phone:
+              <InputBox
+                type="text"
+                placeholder="phone number"
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                value={phoneNumber}
               />
             </label>
 
@@ -111,8 +145,10 @@ export const Form = () => {
                 value={additionalDetails}
               />
             </label>
-            <button onClick={submitHandler}>Confirm Booking</button>
+            <SubmitButton onClick={submitHandler}>Confirm Booking</SubmitButton>
+
             {message ? <Message>{message}</Message> : null}
+            <Services />
           </FormContainer>
         </Wrapper>
       )}
@@ -120,25 +156,34 @@ export const Form = () => {
   );
 };
 
+const Title = styled.p`
+  font-family: "Playball", cursive;
+`;
+
 const FormContainer = styled.div`
   display: flex;
   flex-direction: column;
-  height: 300px;
+  height: 500;
   padding: 20px;
   width: 250px;
 
   position: absolute;
   right: 4px;
   top: 4px;
-  background-color: white;
+  background-color: #e6e6fa;
   z-index: 0;
+
+  -webkit-box-shadow: 0px 4px 16px -2px rgba(0, 0, 0, 0.64);
+  box-shadow: 0px 4px 16px -2px rgba(0, 0, 0, 0.64);
 `;
 
 const Wrapper = styled.div`
-  background-color: #ffc0cb;
+  background-color: #e6e6fa;
   width: 300px;
-  height: 350px;
-  position: relative;
+  height: 530px;
+  position: absolute;
+  right: 10%;
+  border-radius: 8px;
 `;
 
 const Message = styled.span`
@@ -146,6 +191,36 @@ const Message = styled.span`
 `;
 
 const AdditionalDetailsBox = styled.input`
-  height: 30px;
+  height: 50px;
   width: 100%;
+  border-radius: 8px;
+  border: black 0.5px solid;
+  margin-top: 5px;
+`;
+
+const InputBox = styled.input`
+  height: 30px;
+  width: 240px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  border: black 0.5px solid;
+  :focus {
+    border-color: #ffc0cb;
+  }
+`;
+
+const SubmitButton = styled.button`
+  margin-top: 5px;
+  background-color: white;
+  height: 30px;
+  width: 258px;
+  border: black 0.5px solid;
+  border-radius: 5px;
+
+  :hover {
+    background-color: black;
+    color: white;
+    border: white 0.5px solid;
+    cursor: pointer;
+  }
 `;

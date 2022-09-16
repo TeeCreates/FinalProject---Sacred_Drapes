@@ -7,6 +7,8 @@ import { useContext } from "react";
 import { UserContext } from "./UserContext";
 import { useEffect } from "react";
 import { User } from "@auth0/auth0-react";
+import { Loading } from "./Loading";
+import { Services } from "./Services";
 
 const Calender = () => {
   const [currentMonth, setCurrentMonth] = useState(1);
@@ -17,7 +19,7 @@ const Calender = () => {
   const [bookingStatus, setBookingStatus] = useState(null);
   // const [displayedMonthNumber, setDisplayedMonthNumber] = useState("");
 
-  const { setSeletectedDate, seletectedDate, accountEmail } =
+  const { setSeletectedDate, seletectedDate, accountEmail, servicesAndPrices } =
     useContext(UserContext);
   const handleIncrease = () => {
     setCurrentMonth(currentMonth + 1);
@@ -127,7 +129,8 @@ const Calender = () => {
           monthWord: prevMonth,
           monthNumber: previousMonthNumber,
           year: displayedYear,
-          max: 3,
+          max: 2,
+          padding: "yes",
         };
         paddingArrDays.push(paddingObj);
 
@@ -142,7 +145,8 @@ const Calender = () => {
           monthNumber: displayedMonthNumber,
           monthWord: displayedMonthWord,
           year: displayedYear,
-          max: 3,
+          max: 2,
+          padding: "no",
         };
 
         calenderDays.push(currentObj);
@@ -235,70 +239,78 @@ const Calender = () => {
   // .length < max === can book
 
   const getIsBooked = (bookedStatus, date) => {
-    console.log("booking status", bookedStatus);
-    console.log(
-      "test date phrase",
-      date.monthWord + " " + date.day + " " + date.year
-    );
-    console.log(
-      "result",
-      typeof bookedStatus?.[date.monthWord + " " + date.day + " " + date.year]
-    );
+    // console.log("booking status", bookedStatus);
+    // console.log(
+    //   "test date phrase",
+    //   date.monthWord + " " + date.day + " " + date.year
+    // );
+    // console.log(
+    //   "result",
+    //   typeof bookedStatus?.[date.monthWord + " " + date.day + " " + date.year]
+    // );
     return (
       bookedStatus?.[date.monthWord + " " + date.day + " " + date.year] > 3
     );
   };
   return (
     <>
-      <MonthSelecter>
-        <BsFillArrowLeftCircleFill
-          onClick={() => {
-            handleDecrease();
-          }}
-        />
-        <MonthDisplayed>{displayedMonthWord}</MonthDisplayed>
-        <BsFillArrowRightCircleFill onClick={() => handleIncrease()} />
-      </MonthSelecter>
-      <Wrapper>
-        <CalenderContainder>
-          <Weekdays>
-            <div>Sunday</div>
-            <div>Monday</div>
-            <div>Tuesday</div>
-            <div>Wednesday</div>
-            <div>Thursday</div>
-            <div>Friday</div>
-            <div>Saturday</div>
-          </Weekdays>
-          <CalenderDays>
-            {totalDisplayedCalender.map((date, index) => {
-              return (
-                <Day
-                  key={index}
-                  isValid={!isDateBeforeToday(date)}
-                  isEdit={edit}
-                  isFullyBooked={getIsBooked(bookingStatus, date)}
-                  onClick={() => {
-                    if (!isDateBeforeToday(date)) {
-                      selectDate(date);
-                      date.max = date.max - 1;
-                      console.log("max", date["max"]);
-                    }
-                  }}
-                >
-                  {date.day}
-                </Day>
-              );
-            })}
-          </CalenderDays>
-          {accountEmail === "thajanah_mk@hotmail.com" ? (
-            <Edit onClick={() => toggleEdit()} isEdit={edit}>
-              edit
-            </Edit>
-          ) : null}
-        </CalenderContainder>
-        <Form />
-      </Wrapper>
+      {bookingStatus ? (
+        <Container>
+          <MonthSelecter>
+            <BsFillArrowLeftCircleFill
+              onClick={() => {
+                handleDecrease();
+              }}
+            />
+            <MonthDisplayed>{displayedMonthWord}</MonthDisplayed>
+            <BsFillArrowRightCircleFill onClick={() => handleIncrease()} />
+          </MonthSelecter>
+          <Wrapper>
+            <CalenderContainder>
+              <Weekdays>
+                <EachWeekDay>Sunday</EachWeekDay>
+                <EachWeekDay>Monday</EachWeekDay>
+                <EachWeekDay>Tuesday</EachWeekDay>
+                <EachWeekDay>Wednesday</EachWeekDay>
+                <EachWeekDay>Thursday</EachWeekDay>
+                <EachWeekDay>Friday</EachWeekDay>
+                <EachWeekDay>Saturday</EachWeekDay>
+              </Weekdays>
+              <CalenderDays>
+                {totalDisplayedCalender.map((date, index) => {
+                  return (
+                    <Day
+                      key={index}
+                      isValid={!isDateBeforeToday(date)}
+                      isEdit={edit}
+                      isFullyBooked={getIsBooked(bookingStatus, date)}
+                      onClick={() => {
+                        if (!isDateBeforeToday(date)) {
+                          selectDate(date);
+                          date.max = date.max - 1;
+                          console.log("max", date["max"]);
+                        }
+                      }}
+                    >
+                      {date.day}
+                    </Day>
+                  );
+                })}
+              </CalenderDays>
+              {accountEmail === "thajanah_mk@hotmail.com" ? (
+                <Edit onClick={() => toggleEdit()} isEdit={edit}>
+                  edit
+                </Edit>
+              ) : null}
+            </CalenderContainder>
+            <div>
+              <Form />
+            </div>
+          </Wrapper>
+        </Container>
+      ) : (
+        <Loading />
+      )}
     </>
   );
 };
@@ -307,14 +319,17 @@ const Day = styled.div`
   ${(props) =>
     (!props.isValid || props.isFullyBooked) &&
     `
-    background: grey;
-    color: red;
+    background: black;
+    color: black;
+    :hover{
+      color:white
+    }
   `}
   ${(props) =>
     props.isEdit &&
     `
     :hover{
-background-color: yellow;
+background-color: pink;
     } 
    
   `}
@@ -322,6 +337,7 @@ background-color: yellow;
   height: 100px;
   width: 100px;
   border: 1px solid black;
+  margin: 5px;
 `;
 
 // const
@@ -330,11 +346,19 @@ const Weekdays = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  width: 700px;
+  width: 775px;
+  margin-left: 5px;
 `;
-
+const EachWeekDay = styled.div`
+  width: 150px;
+  margin-right: 10px;
+  margin-left: 10px;
+  /* background: red; */
+  display: flex;
+  justify-content: center;
+`;
 const CalenderDays = styled.div`
-  width: 770px;
+  width: 870px;
   height: 500px;
   display: flex;
   flex-wrap: wrap;
@@ -343,6 +367,8 @@ const CalenderDays = styled.div`
 const CalenderContainder = styled.div`
   display: flex;
   flex-direction: column;
+  margin-left: 20px;
+  margin-bottom: 150px;
 `;
 
 const Wrapper = styled.div`
@@ -361,12 +387,19 @@ const Edit = styled.button`
 
 const MonthSelecter = styled.div`
   padding: 20px;
-  background-color: aquamarine;
-  width: 200px;
+  /* background-color: aquamarine; */
+  width: 180px;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: 10px;
 `;
 
 const MonthDisplayed = styled.span`
   font-size: 20px;
+  margin: 20px;
+`;
+
+const Container = styled.div`
+  margin-bottom: 30px;
 `;

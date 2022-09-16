@@ -8,12 +8,15 @@ export const UserProvider = ({ children }) => {
   const [userBookings, setUserBookings] = useState("");
   const [accountEmail, setAccountEmail] = useState("");
   const [section, setSection] = useState(false);
+  const [servicesAndPrices, setServicesAndPrices] = useState("");
 
   /// fetch all booking to display unavailable dates
 
   return (
     <UserContext.Provider
       value={{
+        servicesAndPrices,
+        setServicesAndPrices,
         selectedDate,
         setSeletectedDate,
         domainBookings,

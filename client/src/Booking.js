@@ -3,6 +3,8 @@ import { useContext } from "react";
 import { useEffect, useState } from "react";
 import { UserContext } from "./UserContext";
 import { DomainBookings } from "./DomainBookings";
+import { Loading } from "./Loading";
+import styled from "styled-components";
 
 export const Bookings = () => {
   const {
@@ -30,13 +32,14 @@ export const Bookings = () => {
         })
         .then((data) => {
           setUserBookings(data.data);
+          console.log(data.data);
         });
     };
     if (deleted) {
       fetchUserBookings();
       setDeleted(false);
     }
-  }, [accountEmail, deleted]);
+  }, [accountEmail, deleted, isAuthenticated]);
 
   // console.log(user.email);
 
@@ -56,24 +59,62 @@ export const Bookings = () => {
   };
 
   return (
-    <div>
+    <>
+      <Wrapper>
+        <span>Booking List</span>
+        <span>Date</span>
+        <span>Service</span>
+        <span>Edit</span>
+      </Wrapper>
       {userBookings && user.email !== "thajanah_mk@hotmail.com" ? (
         userBookings.map((booking, index) => {
           console.log(booking.date);
           return (
-            <div key={index}>
-              <span>{index + 1}</span>
+            <BookingBox key={index}>
+              <Index>{index + 1}</Index>
               <span>{booking.date}</span>
               <span>{booking.services}</span>
-              <button onClick={() => deleteBooking(booking._id, index)}>
+              <DeleteBtn onClick={() => deleteBooking(booking._id, index)}>
                 delete
-              </button>
-            </div>
+              </DeleteBtn>
+            </BookingBox>
           );
         })
       ) : (
-        <DomainBookings />
+        <Loading />
       )}
-    </div>
+    </>
   );
 };
+
+const BookingBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: black 1px solid;
+  padding: 20px;
+  margin: 20px;
+  background-color: rgba(238, 174, 202, 0.2);
+  align-items: center;
+  -webkit-box-shadow: 0px 4px 16px -2px rgba(0, 0, 0, 0.64);
+  box-shadow: 0px 4px 16px -2px rgba(0, 0, 0, 0.64);
+`;
+
+const Index = styled.span`
+  border-right: black 1px solid;
+  padding: 20px;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-right: 45px;
+  margin-top: 10px;
+  margin-left: 30px;
+`;
+
+const DeleteBtn = styled.button`
+  background-color: white;
+  padding: 10px;
+`;

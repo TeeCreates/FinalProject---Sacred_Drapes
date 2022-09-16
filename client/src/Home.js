@@ -85,7 +85,7 @@ const Home = () => {
   return (
     <div onScroll={handleScroll} ref={homeRef}>
       {images ? (
-        <div>
+        <div style={{}}>
           <ImageContainer>
             {images
               ? images.map((image, index) => {
@@ -130,8 +130,9 @@ const Home = () => {
 export default Home;
 
 const Img = styled.img`
-  height: 317px;
-  width: 277px;
+  height: 320px;
+  width: 279px;
+  margin: 1px;
 `;
 
 const H1 = styled.h1`
@@ -189,19 +190,20 @@ const ImageContainer = styled.div`
   flex-direction: row;
   justify-content: space-between;
   flex-wrap: wrap;
-  height: 650px;
-  width: 1396px;
+  height: 657px;
+  width: 100%;
   margin-top: 10px;
+  /* background-color: black; */
 `;
 
 const OverLay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 646px;
-  width: 1396px;
+  height: 656px;
+  width: 100%;
   position: relative;
-  bottom: 652px;
+  bottom: 659px;
 
   background: rgba(0, 0, 0, 0.5);
 

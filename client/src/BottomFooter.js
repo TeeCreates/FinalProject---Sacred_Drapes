@@ -4,14 +4,20 @@ import elephants from "./elephants.jpg";
 const BottomFooter = () => {
   return (
     <>
-      <ImageContainer>
-        <Image src={elephants} alt="" />
-        <Image src={elephants} alt="" />
-      </ImageContainer>
-      <Wrapper>
-        <p>Booking Policies </p>
-        <p>Contact Me : thajanah_mk@hotmail.com</p>
-      </Wrapper>
+      <div
+        style={{
+          marginTop: "200px",
+        }}
+      >
+        <ImageContainer>
+          <Image src={elephants} alt="" />
+          <Image src={elephants} alt="" />
+        </ImageContainer>
+        <Wrapper>
+          <span>Contact Me </span>
+          <span>thajanah_mk@hotmail.com</span>
+        </Wrapper>
+      </div>
     </>
   );
 };
@@ -22,9 +28,11 @@ const Wrapper = styled.div`
   background-color: rgba(238, 174, 202, 1);
   position: relative;
 
-  height: 100px;
-
-  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  height: 80px;
+  color: black;
+  padding: 40px;
 `;
 
 const Image = styled.img`

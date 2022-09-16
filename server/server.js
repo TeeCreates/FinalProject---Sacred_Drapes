@@ -46,6 +46,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use("/", express.static(__dirname + "/"));
 
 const {
+  getAllServices,
   getAllImages,
   statusByDate,
   getSpecificImage,
@@ -77,6 +78,10 @@ app.get("/api/booking-status-by-date", statusByDate);
 //CONFIRM BOOKING
 
 app.post("/api/confirmBooking/:bookingId", confirmBooking);
+
+//GET ALL SERVICES
+
+app.get("/api/services", getAllServices);
 
 app.get("*", (req, res) => {
   res.status(404).json({

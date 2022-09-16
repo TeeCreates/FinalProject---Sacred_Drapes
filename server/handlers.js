@@ -11,6 +11,25 @@ const options = {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 };
+
+//SERVICES
+
+const getAllServices = async (req, res) => {
+  try {
+    const client = new MongoClient(MONGO_URI, options);
+    await client.connect();
+    const db = client.db("FinalProject");
+    const services = await db.collection("Services").find().toArray();
+    if (services) {
+      res.status(200).json({ status: 200, data: services });
+    } else {
+      res.status(400).json({ status: 404, data: "not found" });
+    }
+    client.close();
+  } catch (err) {
+    res.status(500).json({ status: 500, data: req.body, message: err.message });
+  }
+};
 // IMAGES
 const getAllImages = async (req, res) => {
   try {
@@ -104,6 +123,7 @@ const getAllBookings = async (req, res) => {
     const getBookings = await db.collection("Bookings").find().toArray();
 
     res.status(200).json({ status: 200, data: getBookings });
+    client.close();
   } catch {
     res
       .status(400)
@@ -136,6 +156,7 @@ const statusByDate = async (req, res) => {
     });
 
     res.status(200).json({ status: 200, data: result });
+    client.close();
   } catch {
     res
       .status(400)
@@ -160,6 +181,7 @@ const getUsersBooking = async (req, res) => {
     });
 
     res.status(200).json({ status: 200, data: bookingsWithEmail });
+    client.close();
   } catch {
     res
       .status(400)
@@ -181,6 +203,7 @@ const deleteSpecificBooking = async (req, res) => {
       .deleteOne({ _id: bookingId });
 
     res.status(200).json({ status: 200, data: deletedBooking });
+    client.close();
   } catch {
     res
       .status(400)
@@ -211,6 +234,7 @@ const addBooking = async (req, res) => {
       services: services,
       date: req.body.date,
       confirm: req.body.confirm,
+      phone: req.body.phone,
     };
 
     // console.log("new boooking", newBooking);
@@ -253,6 +277,7 @@ const updateBooking = async (req, res) => {
     // console.log("found booking", findBooking);
 
     res.status(200).json({ status: 200, data: findBooking });
+    client.close();
   } catch (err) {
     res.status(500).json({ status: 500, message: err.message });
   }
@@ -301,6 +326,7 @@ const confirmBooking = async (req, res) => {
       );
       console.log("update booking", updateBooking);
       res.status(200).json({ status: 200, data: updateBooking });
+      client.close();
     }
   } catch (err) {
     res.status(400).json({ status: 400, message: err.message });
@@ -319,4 +345,5 @@ module.exports = {
   getUsersBooking,
   getAllBookings,
   statusByDate,
+  getAllServices,
 };

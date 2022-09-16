@@ -7,6 +7,9 @@ import { Login } from "./Login";
 import { useRef } from "react";
 import { useContext } from "react";
 import { UserContext } from "./UserContext";
+import { GoCalendar } from "react-icons/go";
+import { FiUser } from "react-icons/fi";
+import { FiLogOut } from "react-icons/fi";
 
 const Navbar = () => {
   const { section, setSection } = useContext(UserContext);
@@ -34,6 +37,7 @@ const Navbar = () => {
       <NavBarContainter>
         <NavLink
           style={{ marginRight: "5px", textDecoration: "none", color: "white" }}
+          activeStyle={{ borderBottom: "solid 3px #fff" }}
           strict
           to="/home/top"
           onClick={() => setSection(!section)}
@@ -42,6 +46,7 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           style={{ marginRight: "5px", textDecoration: "none", color: "white" }}
+          activeStyle={{ borderBottom: "solid 3px #fff" }}
           exact
           to="/home/about"
           // onClick={() => {
@@ -53,10 +58,11 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           style={{ marginRight: "5px", textDecoration: "none", color: "white" }}
+          activeStyle={{ borderBottom: "solid 3px #fff" }}
           exact
           to="/calender"
         >
-          Calender
+          <GoCalendar />
         </NavLink>
         {isAuthenticated ? (
           <NavLink
@@ -66,8 +72,9 @@ const Navbar = () => {
               textDecoration: "none",
               color: "white",
             }}
+            activeStyle={{ borderBottom: "solid 3px #fff" }}
           >
-            <span>Profile</span>
+            <FiUser />
           </NavLink>
         ) : null}
         {!isAuthenticated ? (
@@ -80,7 +87,7 @@ const Navbar = () => {
           <LoginLogout
             onClick={() => logout({ returnTo: window.location.origin })}
           >
-            Logout
+            <FiLogOut />
           </LoginLogout>
         ) : null}
       </NavBarContainter>
@@ -129,4 +136,19 @@ const H1 = styled.h1`
   position: absolute;
   left: 10px;
   top: -20px;
+`;
+
+const ToolTip = styled.div`
+  background-color: black;
+  opacity: 60%;
+  color: white;
+  border-radius: 5px;
+  position: absolute;
+  top: 28px;
+  right: 115px;
+  visibility: hidden;
+  :hover {
+    visibility: visible;
+    opacity: 1;
+  }
 `;
