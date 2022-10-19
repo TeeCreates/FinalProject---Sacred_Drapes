@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import elephants from "./elephants.jpg";
+import { AiOutlineInstagram } from "react-icons/ai";
 
 const BottomFooter = () => {
   return (
@@ -14,8 +15,12 @@ const BottomFooter = () => {
           <Image src={elephants} alt="" />
         </ImageContainer>
         <Wrapper>
-          <span>Contact Me </span>
-          <span>thajanah_mk@hotmail.com</span>
+          <FollowMeDiv>
+            <FollowSpan>Follow me</FollowSpan>
+            <a href="https://www.instagram.com/sacreddrapes/">
+              <AiOutlineInstagram size={30} />
+            </a>
+          </FollowMeDiv>
         </Wrapper>
       </div>
     </>
@@ -41,9 +46,21 @@ const Image = styled.img`
 `;
 
 const ImageContainer = styled.div`
+  font-family: "Playball", cursive;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: -10px;
   margin-top: 50px;
+`;
+
+const FollowMeDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
+const FollowSpan = styled.span`
+  font-family: "Playball", cursive;
 `;
