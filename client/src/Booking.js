@@ -5,6 +5,7 @@ import { UserContext } from "./UserContext";
 import { DomainBookings } from "./DomainBookings";
 import { Loading } from "./Loading";
 import styled from "styled-components";
+import axios, * as others from "axios";
 
 export const Bookings = () => {
   const {
@@ -27,6 +28,15 @@ export const Bookings = () => {
           "Content-Type": "application/json",
         },
       })
+        // const res = await axios({
+        //   headers: {
+        //     "Access-Control-Allow-Origin": "*",
+        //   },
+        //   method: "get",
+        //   url: `https://serverproject-production.up.railway.app/api/bookings/${accountEmail}`,
+        // });
+        // setUserBookings(res.data);
+        // console.log(res.data, "DID IT WORK?");
         .then((res) => {
           return res.json();
         })
